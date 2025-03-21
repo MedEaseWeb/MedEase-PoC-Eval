@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.env/
+venv/
+.envrc
+.pipenv
+Pipfile
+Pipfile.lock
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS system files
+.DS_Store
+
+# Log files
+logs/
+*.log
+
+# Cache
+.cache/
+*.cache
+
+# Data and models (if applicable)
+data/
+models/
+*.h5
+*.ckpt
+*.pth
+*.pt
+*.tflite
+
+# Environment and dependency files
+.env
+
+# VSCode and other IDE-specific files
+.vscode/
+.idea/
+*.swp
+
+# Misc
+*.bak
+*.tmp
