@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
 
-def gpt_simplify(prompt, model="gpt-3.5-turbo", temperature=0.7, max_tokens=800):
+def gpt_simplify(prompt, model="gpt-4o", temperature=0.7, max_tokens=800):
     """
     Calls the OpenAI GPT API with a user-defined prompt.
     """
