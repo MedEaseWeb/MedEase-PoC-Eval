@@ -45,3 +45,5 @@ models/
 # Misc
 *.bak
 *.tmp
+
+*model_weights/

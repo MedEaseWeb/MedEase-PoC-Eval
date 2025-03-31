@@ -54,9 +54,9 @@ class BartLargeCNNLocal:
 
 if __name__ == "__main__":
     model = BartLargeCNNLocal()
-    input_text = "The patient experienced a myocardial infarction and was prescribed acetylsalicylic acid."
-    result = model.simplify(input_text)
-    print(result["formatted"])
+    # input_text = "The patient experienced a myocardial infarction and was prescribed acetylsalicylic acid."
+    # result = model.simplify(input_text)
+    # print(result["formatted"])
 
 '''
 Simplify the medical jargon in the following text using layman-friendly terms. The patient experienced a myocardial infarction and was prescribed acetylsalicylic acid. Restructure and summarize the following medical text into clean, readable paragraphs: 
