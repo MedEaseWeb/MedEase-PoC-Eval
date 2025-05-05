@@ -26,7 +26,10 @@ class BartLargeCNNLocal:
 
     def syntactic_simplification(self, text: str) -> str:
         prompt = (
-            f"Break the following medical text into shorter, clearer, and simpler sentences:\n\n{text}"
+            "Rewrite the following medical passage into multiple shorter sentences. "
+            "Make each sentence clear and easy to read, without changing any medical information. "
+            "Keep the vocabulary as is — do not use simpler terms.\n\n"
+            f"{text}"
         )
         return self._generate(prompt)
 
@@ -57,6 +60,8 @@ if __name__ == "__main__":
     # input_text = "The patient experienced a myocardial infarction and was prescribed acetylsalicylic acid."
     # result = model.simplify(input_text)
     # print(result["formatted"])
+    print(model.syntactic_simplification("hello world this is yuxuan shi, your biggest user"))
+    
 
 '''
 Simplify the medical jargon in the following text using layman-friendly terms. The patient experienced a myocardial infarction and was prescribed acetylsalicylic acid. Restructure and summarize the following medical text into clean, readable paragraphs: 

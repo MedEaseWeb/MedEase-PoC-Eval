@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from dotenv import find_dotenv
+from openai import OpenAI
 import openai
 from pathlib import Path
 import pprint
@@ -10,23 +11,25 @@ load_dotenv(find_dotenv())
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 def gpt_simplify(prompt, model="gpt-4o", temperature=0.7, max_tokens=800):
     """
-    Calls the OpenAI GPT API with a user-defined prompt.
+    Calls the OpenAI GPT API with a user-defined prompt using the new >=1.0.0 API.
     """
     messages = [{"role": "user", "content": prompt}]
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=model,
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens
         )
-        return response["choices"][0]["message"]["content"].strip()
+        return response.choices[0].message.content.strip()
     except Exception as e:
         print(f"[GPT ERROR] {e}")
         return ""
+
 
 class BaselineSimplificationPipeline:
     """
@@ -37,7 +40,7 @@ class BaselineSimplificationPipeline:
     4. Dynamic summarization
     """
 
-    def __init__(self, model="gpt-3.5-turbo"):
+    def __init__(self, model="gpt-4o"):
         self.model = model
 
     def lexical_simplification(self, text: str) -> str:
@@ -104,10 +107,10 @@ if __name__ == "__main__":
        "Two trials met the inclusion criteria. One compared 2% ketanserin ointment in polyethylene glycol (PEG) with PEG alone, used twice a day by 40 participants with arterial leg ulcers, for eight weeks or until healing, whichever was sooner. One compared topical application of blood-derived concentrated growth factor (CGF) with standard dressing (polyurethane film or foam); both applied weekly for six weeks by 61 participants with non-healing ulcers (venous, diabetic arterial, neuropathic, traumatic, or vasculitic). Both trials were small, reported results inadequately, and were of low methodological quality. Short follow-up times (six and eight weeks) meant it would be difficult to capture sufficient healing events to allow us to make comparisons between treatments. One trial demonstrated accelerated wound healing in the ketanserin group compared with the control group. In the trial that compared CGF with standard dressings, the number of participants with diabetic arterial ulcers were only reported in the CGF group (9/31), and the number of participants with diabetic arterial ulcers and their data were not reported separately for the standard dressing group. In the CGF group, 66.6% (6/9) of diabetic arterial ulcers showed more than a 50% decrease in ulcer size compared to 6.7% (2/30) of non-healing ulcers treated with standard dressing. We assessed this as very-low certainty evidence due to the small number of studies and arterial ulcer participants, inadequate reporting of methodology and data, and short follow-up period. Only one trial reported side effects (complications), stating that no participant experienced these during follow-up (six weeks, low-certainty evidence). It should also be noted that ketanserin is not licensed in all countries for use in humans. Neither study reported time to ulcer healing, patient satisfaction or quality of life. There is insufficient evidence to determine whether the choice of topical agent or dressing affects the healing of arterial leg ulcers."
     )
 
-    # result = pipeline.simplify(raw_text)
+    result = pipeline.simplify(raw_text)
 
-    # print("\nFinal Dynamic Output:")
-    # print(result["final_output"])
+    print("\nFinal Dynamic Output:")
+    print(result["final_output"])
     
     dummyoutput = {'Diagnosis': 'Leg ulcers', 'Treatment': 'Special ointment used twice daily for eight weeks in one study, growth factor used once a week for six weeks in another study', 'Next Steps': 'Due to limitations in the studies, including short follow-up periods and lack of detailed results, further research is needed to determine the effectiveness of the treatments', 'Other Information': {'Key Points': ['One study reported faster wound healing with the ointment, while the other study showed shrinkage of ulcers with the growth factor', 'Ketanserin, a medication used in one of the studies, is not approved in all countries', 'Important factors such as healing time, patient satisfaction, and quality of life were not discussed in either study', 'Reliability of results is questionable due to poor quality of studies and lack of detailed information'], 'Complications': 'Only one study mentioned the absence of complications during the follow-up period'}}
     

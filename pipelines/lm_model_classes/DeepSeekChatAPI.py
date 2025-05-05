@@ -10,7 +10,7 @@ import json
 load_dotenv(find_dotenv())
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
-def deepseek_simplify(prompt, model="deepseek-chat", temperature=0.7, max_tokens=800):
+def deepseek_simplify(prompt, model="deepseek-chat", temperature=0.0, max_tokens=500):
     """
     Calls the DeepSeek API with a user-defined prompt.
     """
@@ -43,27 +43,65 @@ class DeepSeekChatAPI:
 
     def lexical_simplification(self, text: str) -> str:
         prompt = (
-            f"You are a medical language simplification assistant. Your task is to replace all complex medical jargon "
-            f"in the following text with plain, layman-friendly language, without changing the meaning.\n\n"
-            f"Text:\n{text}"
-        )
+    "You are a medical language simplification assistant. Your task is to rewrite complex medical sentences "
+    "using simpler vocabulary without changing the original meaning. Do not explain or remove information—only "
+    "replace terms with simpler equivalents. Break up long sentences where needed. Return plain text only.\n\n"
+    "Original: The patient presented with dyspnea and required supplemental oxygen.\n"
+    "Simplified: The patient had trouble breathing and needed extra oxygen.\n\n"
+    "Original: Administer acetaminophen PRN for febrile episodes exceeding 38°C.\n"
+    "Simplified: Give acetaminophen when needed if the fever goes above 38°C.\n\n"
+    "Original: Hypertension was managed conservatively without pharmacological intervention.\n"
+    "Simplified: High blood pressure was controlled without using medicine.\n\n"
+    "Original: A colonoscopy was recommended to rule out neoplastic changes.\n"
+    "Simplified: A colonoscopy was suggested to check for signs of cancer.\n\n"
+    f"Original: {text}\nSimplified:"
+)
+
         return deepseek_simplify(prompt, model=self.model)
 
     def syntactic_simplification(self, text: str) -> str:
         prompt = (
-            f"You are a text simplifier. Break the following medical text into shorter, simpler, and more readable sentences. "
-            f"Avoid unnecessary repetition, and keep the meaning intact.\n\n"
-            f"Text:\n{text}"
+            "You are a syntactic simplifier specializing in medical text. Your task is to break down long or complex sentences "
+            "into multiple shorter, simpler sentences while keeping the meaning exactly the same. "
+            "Do not remove or add any information. Do not summarize or simplify vocabulary. Only modify sentence structure for clarity.\n\n"
+            "Output plain text only. No bullet points, no markdown, no extra formatting.\n\n"
+
+            "Original: The patient was admitted for chest pain, which started three hours prior and was accompanied by shortness of breath and sweating.\n"
+            "Simplified: The patient was admitted for chest pain. The pain started three hours earlier. It was accompanied by shortness of breath and sweating.\n\n"
+            
+            "Original: Follow-up imaging was performed to evaluate the effectiveness of the prescribed antibiotics in resolving the patient's pneumonia.\n"
+            "Simplified: Follow-up imaging was performed. It was done to evaluate whether the antibiotics were helping to resolve the patient’s pneumonia.\n\n"
+            
+            "Original: The patient denied experiencing any nausea, vomiting, or changes in bowel habits but reported increased fatigue and occasional dizziness.\n"
+            "Simplified: The patient did not experience nausea, vomiting, or changes in bowel habits. However, they reported feeling more tired. They also experienced occasional dizziness.\n\n"
+
+            f"Original: {text}\nSimplified:"
         )
         return deepseek_simplify(prompt, model=self.model)
 
+
     def format_summarization(self, text: str) -> str:
         prompt = (
-            f"You are a summarization assistant. Improve the paragraph structure and logical flow of the following simplified medical text. "
-            f"Group related ideas together and ensure the output is clean and easy to read.\n\n"
-            f"Text:\n{text}"
+            "You are a professional medical editor specializing in patient education materials.\n"
+            "Your task is to take simplified clinical text and polish it into clear, coherent, and fluent English suitable for patients.\n"
+            "Keep all medical facts accurate — do not add or remove any factual content.\n"
+            "Make the text smooth, grammatically correct, and supportive in tone.\n"
+            "Return plain text only. No titles, markdown, or extra commentary.\n\n"
+
+            "Input: The meta-analysis included 894 men. No studies reported live birth. The combined fixed-effect odds ratio (OR) of the 10 studies for the outcome of pregnancy was 1.47 (95% CI 1.05 to 2.05), favouring the intervention. [...] \n"
+            "Polished: This review analysed 10 studies (894 participants) and found evidence (combined odds ratio was 1.47 (95% CI 1.05 to 2.05)) to suggest an increase in pregnancy rates after varicocele treatment compared to no treatment in subfertile couples. [...]\n\n"
+
+            "Input: Six studies comprising nearly 450 patients were included. In general the quality of the studies was good. [...] \n"
+            "Polished: The review authors included five randomised and one controlled clinical trial involving a total of nearly 450 patients. In general the quality of the studies was good. [...]\n\n"
+
+            "Input: Only two eligible trials were included (593 patients), both of reasonable quality although one was unblinded. [...] \n"
+            "Polished: We reviewed the trials that compared giving MAO-B inhibitors with other types of medication in people with early Parkinson's disease. However, only two trials were found (593 patients), so the evidence is limited. [...]\n\n"
+
+            f"Input: {text}\nPolished:"
         )
         return deepseek_simplify(prompt, model=self.model)
+
+
 
     def simplify(self, text: str) -> dict:
         print("[Stage 1] Lexical Simplification")
@@ -144,4 +182,6 @@ There is insufficient evidence to support the effectiveness of these treatments 
 ---  
 
 This version improves readability by grouping related information, using clear headings, and maintaining a logical progression from study details to results and conclusions. Let me know if you'd like any further refinements!'''
-    pprint.pp(dummyoutput)
+    # pprint.pp(dummyoutput)
+    
+    print(pipeline.syntactic_simplification(raw_text))
