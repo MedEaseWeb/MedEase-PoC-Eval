@@ -48,3 +48,6 @@ models/
 
 *model_weights/
 *data/
+
+results/
+pipeline_eval_results/
