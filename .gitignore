@@ -47,3 +47,4 @@ models/
 *.tmp
 
 *model_weights/
+*data/
